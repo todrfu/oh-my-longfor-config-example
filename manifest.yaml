@@ -1,0 +1,146 @@
+# oh-my-longfor Team Manifest
+# =============================================================================
+# This is your team's configuration manifest for oh-my-longfor (oml).
+# Fork this repository and customize this file for your team.
+#
+# After setup, run: bash install.sh <this-repo-url>
+# =============================================================================
+
+version: "1"
+
+# =============================================================================
+# MCPs (Model Context Protocol Servers)
+# =============================================================================
+# These are Remote/SSE MCPs that will be configured in OpenCode for all team members.
+# Use {env:VAR_NAME} syntax for secrets — never put actual keys here!
+# =============================================================================
+mcps:
+  # ── Remote MCPs (SSE/HTTP transport) ────────────────────────────────────────
+  # Context7 — Up-to-date library documentation
+
+  - name: context7
+    type: remote
+    url: "https://mcp.context7.com/sse"
+    headers:
+      Authorization: "Bearer {env:CONTEXT7_API_KEY}"
+
+  # ── Local MCPs (stdio transport) ──────────────────────────────────────────
+  # Sequential Thinking — structured reasoning via npx (Node)
+  # 'command' is an array combining the executable and all its arguments.
+
+  # Example: Python/uv based local MCP
+  # - name: my-python-mcp
+  #   type: local
+  #   command: ["uv", "run", "my-mcp-server"]
+  #   environment:
+  #     MY_API_KEY: "{env:MY_API_KEY}"
+
+  - name: sequential-thinking
+    type: local
+    command: ["npx", "-y", "@modelcontextprotocol/server-sequential-thinking"]
+
+  - name: context7
+    type: local
+    command: ["npx", "-y", "@upstash/context7-mcp@latest"]
+    enabled: true
+
+  - name: open-websearch
+    type: local
+    command: ["npx", "-y", "open-websearch@latest"]
+    environment:
+      MODE: "stdio"
+      DEFAULT_SEARCH_ENGINE: "duckduckgo"
+      ALLOWED_SEARCH_ENGINES: "duckduckgo,bing,brave"
+    enabled: true
+
+  - name: Playwright
+    type: local
+    command: ["npx", "-y", "@playwright/mcp@latest"]
+    enabled: true
+
+  - name: figma-developer-mcp
+    type: local
+    command: ["npx", "-y", "figma-developer-mcp", "--stdio"]
+    environment:
+      FIGMA_API_KEY: "{env:FIGMA_API_KEY}"
+    enabled: true
+
+# =============================================================================
+# Skills
+# =============================================================================
+# Git repositories containing OpenCode skills for your team.
+# Each repo should have a directory structure like: <repo>/<subdir>/<skill-name>/SKILL.md
+# =============================================================================
+skills:
+  repos:
+    # Public team skills repository
+    - repo: "https://github.com/anthropics/skills"
+      branch: main
+      subdir: "skills/"
+      auth: null  # public repo
+    
+    - repo: "https://github.com/antfu/skills"
+      branch: main
+      subdir: "skills/"
+
+    # Domain-specific skills (private repo using GitHub token)
+    # - repo: "https://github.com/example/domain-skills"
+    #   branch: main
+    #   subdir: "skills/"
+    #   auth: token  # uses GITHUB_TOKEN env var
+
+# =============================================================================
+# Plugins
+# =============================================================================
+# OpenCode plugins (npm packages) to load automatically.
+# These extend OpenCode's functionality with custom hooks and tools.
+# =============================================================================
+plugins:
+  - "@spoons-and-mirrors/subtask2@0.3.5"
+
+# =============================================================================
+# Environment Variables
+# =============================================================================
+# All env vars required by your team's MCPs and skills.
+# Run `oml env` to see which vars you have set and which are missing.
+# Copy ~/.oml/env/.env.template to ~/.env.oml and fill in your values.
+# =============================================================================
+env:
+  - name: CONTEXT7_API_KEY
+    description: "Context7 API key for documentation MCP. Get from https://context7.com/settings (free tier available)"
+    required: false
+
+  - name: FIGMA_API_KEY
+    description: "Figma API key for figma-developer-mcp. Get from https://www.figma.com(User -> Settings -> Security -> Personal access tokens)"
+    required: false
+
+  - name: OPENAI_API_KEY
+    description: "OpenAI API key for GPT-4 model access in oracle agent. Get from https://platform.openai.com/api-keys"
+    required: false
+
+  - name: GEMINI_API_KEY
+    description: "Gemini API key for Gemini model access in oracle agent. Get from https://aistudio.google.com/api-keys"
+    required: false
+
+  - name: ANTHROPIC_API_KEY
+    description: "Anthropic API key for Claude model access. Get from https://console.anthropic.com/settings/keys"
+    required: false
+
+  - name: ANTHROPIC_BASE_URL
+    description: "Your Anthropic base URL."
+    required: false
+
+# =============================================================================
+# oh-my-opencode Overrides
+# =============================================================================
+# Optional: Override oh-my-opencode defaults for your team.
+# Leave empty to use oh-my-opencode defaults.
+# =============================================================================
+omo_overrides:
+  agents:
+    # Example: override oracle agent model
+    # oracle:
+    #   model: "gpt-4o"
+  models: {}
+  disabled_mcps: []
+  disabled_skills: []
